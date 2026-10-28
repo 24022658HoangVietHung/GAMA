@@ -50,6 +50,12 @@ if __name__ == '__main__':
     parser.add_argument('--mode', type=str, default='eval', help='specify the mode')
     parser.add_argument('--TF', type=str, default='FAP', help='specify the teacher forcing style')
     parser.add_argument('--beta', type=float, default=0.01, help='specify the hyperparameter beta')
+    parser.add_argument('--only', type=str, default='', help='only run logs whose name contains this string')
+    parser.add_argument('--hidden_dim', type=int, default=64)
+    parser.add_argument('--n_epochs', type=int, default=20)
+    parser.add_argument('--lr', type=float, default=0.0005)
+    parser.add_argument('--seed', type=int, default=None)
+    parser.add_argument('--res', type=str, default='result.csv')
 
     args = parser.parse_args()
 
@@ -78,7 +84,7 @@ if __name__ == '__main__':
 
     else:
         filePath = 'eventlogs'
-        resPath = 'result.csv'
+        resPath = args.res
         dataset_names = os.listdir(filePath)
         if 'cache' in dataset_names:
             dataset_names.remove('cache')
@@ -99,6 +105,8 @@ if __name__ == '__main__':
         dataset_names_real.sort()
 
         dataset_names = dataset_names_syn + dataset_names_real
+        if args.only:
+            dataset_names = [n for n in dataset_names if args.only in n]
 
         for dataset_name in dataset_names:
             try:
@@ -106,11 +114,12 @@ if __name__ == '__main__':
                 start_time = time.time()
                 dataset = Dataset_eval(dataset_name, beta=args.beta)
                 trace_level_abnormal_scores, event_level_abnormal_scores, attr_level_abnormal_scores = main(dataset,
-                                                                                                            n_epochs=20,
-                                                                                                            lr=0.0005,
+                                                                                                            n_epochs=args.n_epochs,
+                                                                                                            lr=args.lr,
                                                                                                             decoder_num_layers=2,
-                                                                                                            hidden_dim=64,
+                                                                                                            hidden_dim=args.hidden_dim,
                                                                                                             batch_size=64,
+                                                                                                            seed=args.seed,
                                                                                                             TF_styles=args.TF)
 
                 end_time = time.time()
