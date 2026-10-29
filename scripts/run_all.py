@@ -4,7 +4,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 (ROOT / "logs").mkdir(exist_ok=True)
 (ROOT / "results").mkdir(exist_ok=True)
 
-LOGS = ["paper-0.30-1", "small-0.30-1"]
+LOGS = ["paper-0.30-1", "small-0.30-1", "Sepsis-0.3-1"]
 TFS = ["AN", "PAV", "FAP"]
 SEED = 42
 
